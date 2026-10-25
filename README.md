@@ -6,18 +6,19 @@ Processamento independente de métricas e processos do StreamGuard no Amazon S3:
 Bronze → validação e deduplicação → Silver → agregações → Gold
 ```
 
-A transformação utiliza SQLite temporário em disco. A execução não depende da captura ou da API Web.
+A transformação utiliza Pandas/DataFrames para conversões, validações, deduplicação e agregações. A execução não depende da captura ou da API Web.
 
 ## Componentes
 
 - `etl.py`: lê a Bronze, valida os registros, elimina duplicações, rejeita conflitos e publica a Silver e o relatório de qualidade.
 - `gerar-gold.py`: lê a Silver e produz dados detalhados e resumos por servidor e janela de tempo.
+- `tratamento.py`: contratos CSV, conversões e regras compartilhadas pelas duas camadas.
 - `processar.sh`: executa Silver e Gold em sequência, com trava contra processamento simultâneo.
 - `instalar.sh`: prepara o ambiente Python e registra o serviço e o timer systemd.
 
 ## Instalação e configuração
 
-Requer Python 3.10 ou superior. As dependências externas são `boto3` e `python-dotenv`; SQLite pertence à biblioteca padrão.
+Requer Python 3.10 ou superior. As dependências externas são `boto3`, `python-dotenv`, `pandas>=2.2,<3` e `numpy>=1.26,<3`.
 
 No PowerShell:
 
@@ -86,5 +87,7 @@ A primeira opção exibe as unidades planejadas; a segunda valida o `.env`. `PYT
 Consulte a execução com `sudo journalctl -u streamguard-etl.service -n 50 --no-pager`. A instalação conjunta de API/MySQL é coordenada pelo instalador da captura, com os três repositórios lado a lado.
 
 ## Limitações
+
+A leitura e a validação usam blocos de até 10.000 linhas. A comparação de identidades é global à execução, inclusive entre arquivos e blocos, e os registros tratados são mantidos em memória; dimensione a RAM conforme o volume da Bronze.
 
 A ETL relê toda a Bronze e publica arquivos sequencialmente. Silver sem registros válidos não substitui saídas anteriores; Gold exige ambos os CSVs Silver. A instalação, as permissões IAM e os consumidores dos arquivos precisam ser homologados na infraestrutura real.

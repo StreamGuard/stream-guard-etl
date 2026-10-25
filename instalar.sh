@@ -12,7 +12,7 @@ if (( $# > 1 )) || [[ -n "$MODO" && "$MODO" != "--verificar" && "$MODO" != "--va
     exit 2
 fi
 
-for arquivo in etl.py gerar-gold.py requirements.txt processar.sh; do
+for arquivo in etl.py gerar-gold.py tratamento.py requirements.txt processar.sh; do
     [[ -f "$RAIZ/$arquivo" ]] || { echo "Arquivo ausente: $arquivo" >&2; exit 1; }
 done
 if [[ "$RAIZ" =~ [[:space:]] || "$RAIZ" == *%* || "$RAIZ" == *\\* ]]; then
