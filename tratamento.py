@@ -19,6 +19,11 @@ METRICAS = {
     "taxa_escrita_disco": ("TAXA_ESCRITA_DISCO", "bytes/s"),
     "taxa_envio_rede": ("TAXA_ENVIO_REDE", "bytes/s"),
     "taxa_recebimento_rede": ("TAXA_RECEBIMENTO_REDE", "bytes/s"),
+    # Dados fixos da máquina (inventário), enviados junto de cada linha de métricas.
+    "memoria_total": ("MEMORIA_TOTAL", "bytes"),
+    "disco_total": ("DISCO_TOTAL", "bytes"),
+    "uptime": ("UPTIME", "s"),
+    "capacidade_rede": ("CAPACIDADE_REDE", "bytes/s"),
 }
 CAMPOS_METRICAS = ["servidor_id", "timestamp", "tipo", "valor", "unidade"]
 CAMPOS_PROCESSOS = ["servidor_id", "timestamp", "pid", "nome", "status", "uso_cpu", "ram_bytes"]
